@@ -1090,6 +1090,8 @@
           card.addEventListener("click", () => {
             const url = card.dataset.url;
             const desc = card.dataset.desc || "Project details coming soon.";
+            galleryModal.classList.remove("active");
+            galleryModal.setAttribute("aria-hidden", "true");
             modal.classList.add("active");
             modal.setAttribute("aria-hidden", "false");
             modalTitle.textContent = card.querySelector("h3").textContent;
