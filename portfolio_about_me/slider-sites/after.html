@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseTrace — Crypto Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root { --bg: #0b0f1a; --ink: #f5f7ff; --muted: #9aa3b2; --accent: #7b4dff; --line: #1c2233; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--ink); }
+      .wrap { padding: 14px; display: grid; gap: 10px; }
+      .nav { display: flex; justify-content: space-between; font-size: 9px; text-transform: uppercase; letter-spacing: 0.25em; color: var(--muted); }
+      .hero { background: #0f1526; border: 1px solid var(--line); padding: 10px; border-radius: 10px; display: grid; gap: 6px; }
+      h1 { font-size: 15px; }
+      p { font-size: 10px; color: var(--muted); line-height: 1.4; }
+      .cta { margin-top: 4px; background: var(--accent); color: #fff; padding: 6px 10px; border-radius: 999px; font-size: 9px; display: inline-block; }
+      .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+      .badge { font-size: 8.5px; padding: 4px 6px; background: #10172b; border: 1px solid var(--line); border-radius: 999px; color: #c7cbe0; }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .card { border: 1px solid var(--line); padding: 6px; font-size: 9px; background: #0f1526; border-radius: 8px; }
+      .chart { height: 46px; border: 1px solid var(--line); background: #0f1526; border-radius: 8px; }
+      .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .plan { border: 1px solid var(--line); padding: 6px; font-size: 9px; background: #0f1526; border-radius: 8px; }
+      .trust { font-size: 9px; color: var(--muted); }
+      .logo { font-weight: 700; letter-spacing: 0.2em; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="nav">
+        <div class="logo">PulseTrace</div>
+        <div>Markets · Alerts · Portfolio</div>
+      </div>
+      <div class="hero">
+        <h1>Real‑time crypto intelligence for traders</h1>
+        <p>Live alerts, curated signals, and clean dashboards built for fast decisions.</p>
+        <div class="cta">Start Free</div>
+      </div>
+      <div class="badges">
+        <div class="badge">Live alerts</div>
+        <div class="badge">Portfolio sync</div>
+        <div class="badge">Risk signals</div>
+      </div>
+      <div class="grid">
+        <div class="card">BTC · $63,240</div>
+        <div class="card">ETH · $3,140</div>
+        <div class="card">SOL · $148</div>
+      </div>
+      <div class="chart"></div>
+      <div class="pricing">
+        <div class="plan">Starter · $0</div>
+        <div class="plan">Pro · $19</div>
+        <div class="plan">Desk · $59</div>
+      </div>
+      <div class="trust">Trusted by 12,000+ active traders · 4.9★</div>
+    </div>
+  </body>
+</html>

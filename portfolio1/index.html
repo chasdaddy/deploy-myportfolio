@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE ARCHITECT | Luxury Grooming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        if (window.self !== window.top) {
+            document.documentElement.classList.add('embedded');
+        }
+    </script>
+    <style>
+        :root {
+            --charcoal: #0a0a0a;
+            --off-white: #FAFAF9;
+            --cream: #F5F4F0;
+            --accent: #8B8680;
+            --gold: #C9A962;
+        }
+
+        * {
+            cursor: none;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--off-white);
+            color: var(--charcoal);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #000;
+            background-color: #000;
+            box-shadow: 0 0 0 1px #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hover {
+            transform: scale(2);
+            background-color: rgba(50, 50, 50, 0.1);
+            border-color: #222;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        html.embedded * {
+            cursor: default !important;
+        }
+
+        html.embedded .cursor,
+        html.embedded .cursor-dot {
+            display: none !important;
+        }
+
+        /* Glass Navigation */
+        .glass {
+            background: rgba(250, 250, 249, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        /* Animations */
+        .stagger-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stagger-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+        }
+
+        /* Section Styling */
+        .section-title {
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        /* Service Items */
+        .service-item {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-item:hover::after {
+            width: 100%;
+        }
+
+        .service-item:hover {
+            padding-left: 12px;
+        }
+
+        /* Studio Cards */
+        .studio-card {
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #111;
+        }
+        
+        .studio-card:hover {
+            transform: scale(0.98);
+        }
+
+        .studio-card img {
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+        }
+
+        .studio-card:hover img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
+        }
+
+        /* Testimonial Card */
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,244,240,0.9) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        /* Floating Button */
+        .floating-btn {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Grain Overlay */
+        .grain::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Link Underline Animation */
+        .link-hover {
+            position: relative;
+        }
+
+        .link-hover::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-hover:hover::after {
+            width: 100%;
+        }
+
+        /* Image Fallback */
+        img {
+            background-color: #e8e7e4;
+        }
+
+        /* Hamburger Animation */
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 1px;
+            background: var(--charcoal);
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor hidden md:block"></div>
+    <div class="cursor-dot hidden md:block"></div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress fixed top-0 left-0 w-full h-[2px] bg-[var(--gold)] z-[100]"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass h-18 flex items-center px-6 md:px-12 lg:px-20 justify-between py-5">
+        <a href="#" class="text-sm font-medium tracking-[0.25em] uppercase">The Architect</a>
+        
+        <div class="hidden md:flex items-center space-x-12">
+            <div class="flex space-x-10 text-[11px] font-normal uppercase tracking-[0.2em] text-neutral-500">
+                <a href="#craft" class="link-hover hover:text-black transition-colors">The Craft</a>
+                <a href="#studio" class="link-hover hover:text-black transition-colors">Studio</a>
+                <a href="#voices" class="link-hover hover:text-black transition-colors">Voices</a>
+                <a href="#philosophy" class="link-hover hover:text-black transition-colors">Philosophy</a>
+            </div>
+            <button id="contactBtn" class="text-[11px] uppercase tracking-[0.2em] font-medium px-6 py-3 border border-neutral-200 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white transition-all duration-300">
+                Contact
+            </button>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button class="hamburger md:hidden flex flex-col space-y-1.5" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu fixed inset-0 z-40 bg-[var(--off-white)] pt-24 px-8 md:hidden">
+        <div class="flex flex-col space-y-8">
+            <a href="#craft" class="text-3xl font-display font-light mobile-link">The Craft</a>
+            <a href="#studio" class="text-3xl font-display font-light mobile-link">The Studio</a>
+            <a href="#voices" class="text-3xl font-display font-light mobile-link">Voices</a>
+            <a href="#philosophy" class="text-3xl font-display font-light mobile-link">Philosophy</a>
+            <button class="contact-trigger text-3xl font-display font-light text-left text-[var(--gold)]">Contact</button>
+        </div>
+        <div class="absolute bottom-12 left-8">
+            <p class="text-sm text-neutral-400">1242 Artisan Ave, New York</p>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex flex-col lg:flex-row pt-20 lg:pt-0 overflow-hidden grain">
+        <div class="w-full lg:w-[55%] flex flex-col justify-center px-8 md:px-12 lg:px-20 py-16 lg:py-0 relative z-10">
+            <span class="text-[10px] uppercase tracking-[0.4em] text-neutral-400 mb-8 stagger-in">Est. 2024 — New York</span>
+            <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-light section-title mb-8 stagger-in" style="transition-delay: 0.1s">
+                Refinement <br/> <span class="text-[var(--accent)] italic">is a choice.</span>
+            </h1>
+            <p class="text-base md:text-lg font-light text-neutral-500 max-w-md leading-relaxed mb-12 stagger-in" style="transition-delay: 0.2s">
+                The modern grooming destination for those who understand that precision is not a luxury—it's a standard.
+            </p>
+            <div class="flex items-center space-x-10 stagger-in" style="transition-delay: 0.3s">
+                <a href="#craft" class="group flex items-center space-x-3 text-sm font-medium">
+                    <span class="link-hover">Explore the craft</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-[45%] relative h-[60vh] lg:h-screen overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-[var(--off-white)] via-transparent to-transparent lg:bg-gradient-to-r z-10"></div>
+            <img 
+                src="https://images.pexels.com/photos/1813272/pexels-photo-1813272.jpeg?auto=compress&cs=tinysrgb&w=1400" 
+                alt="Precision Barbering" 
+                class="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-out scale-105"
+                id="heroImg"
+            />
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-8 md:left-12 lg:left-20 hidden lg:flex flex-col items-center space-y-4 stagger-in" style="transition-delay: 0.5s">
+            <span class="text-[10px] uppercase tracking-[0.3em] text-neutral-400 rotate-90 origin-center translate-y-8">Scroll</span>
+            <div class="w-[1px] h-16 bg-neutral-300 relative overflow-hidden">
+                <div class="absolute inset-0 bg-neutral-900 animate-pulse origin-top"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Craft Section -->
+    <section id="craft" class="bg-white py-32 md:py-48 px-8 md:px-12 lg:px-20 relative grain">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-start">
+                <div class="lg:sticky lg:top-32">
+                    <span class="text-[10px] uppercase tracking-[0.4em] text-neutral-400 mb-8 block stagger-in">01 — The Craft</span>
+                    <h2 class="text-4xl sm:text-5xl md:text-6xl font-display font-light section-title mb-10 stagger-in" style="transition-delay: 0.1s">
+                        Architectural <br/><span class="italic text-[var(--accent)]">Scissor Work</span>
+                    </h2>
+                    <p class="text-base md:text-lg font-light text-neutral-500 leading-relaxed mb-12 stagger-in" style="transition-delay: 0.2s">
+                        Every service begins with a fundamental consultation. We study the geometry of your face, the texture of your hair, and the intent of your style to create a look that is uniquely yours.
+                    </p>
+                    
+                    <div class="space-y-0 stagger-in" style="transition-delay: 0.3s">
+                        <div class="service-item flex justify-between items-center py-6 border-b border-neutral-100">
+                            <div>
+                                <span class="font-medium text-sm md:text-base">The Signature Cut</span>
+                                <p class="text-xs text-neutral-400 mt-1">60 min</p>
+                            </div>
+                            <span class="text-[var(--gold)] font-display text-xl">$85</span>
+                        </div>
+                        <div class="service-item flex justify-between items-center py-6 border-b border-neutral-100">
+                            <div>
+                                <span class="font-medium text-sm md:text-base">Traditional Straight Razor Shave</span>
+                                <p class="text-xs text-neutral-400 mt-1">45 min</p>
+                            </div>
+                            <span class="text-[var(--gold)] font-display text-xl">$65</span>
+                        </div>
+                        <div class="service-item flex justify-between items-center py-6 border-b border-neutral-100">
+                            <div>
+                                <span class="font-medium text-sm md:text-base">Beard Architecture</span>
+                                <p class="text-xs text-neutral-400 mt-1">30 min</p>
+                            </div>
+                            <span class="text-[var(--gold)] font-display text-xl">$45</span>
+                        </div>
+                        <div class="service-item flex justify-between items-center py-6 border-b border-neutral-100">
+                            <div>
+                                <span class="font-medium text-sm md:text-base">The Complete Experience</span>
+                                <p class="text-xs text-neutral-400 mt-1">90 min • Cut + Shave + Treatment</p>
+                            </div>
+                            <span class="text-[var(--gold)] font-display text-xl">$140</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative stagger-in" style="transition-delay: 0.4s">
+                    <div class="aspect-[3/4] overflow-hidden">
+                        <img 
+                            src="https://images.pexels.com/photos/1570807/pexels-photo-1570807.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+                            alt="Barber at Work" 
+                            class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                        />
+                    </div>
+                    <div class="absolute -bottom-8 -left-8 md:-left-12 bg-[var(--charcoal)] text-white p-8 md:p-10 max-w-xs">
+                        <span class="text-[var(--gold)] font-display text-4xl md:text-5xl block mb-2">12+</span>
+                        <span class="text-xs uppercase tracking-[0.2em] text-neutral-400">Years of Craft</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Studio Section -->
+    <section id="studio" class="bg-[var(--charcoal)] text-[var(--off-white)] py-32 md:py-48 overflow-hidden">
+        <div class="px-8 md:px-12 lg:px-20 mb-16">
+            <span class="text-[10px] uppercase tracking-[0.4em] text-neutral-500 mb-8 block stagger-in">02 — The Studio</span>
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between">
+                <h2 class="text-4xl sm:text-5xl md:text-6xl font-display font-light section-title mb-6 md:mb-0 stagger-in" style="transition-delay: 0.1s">
+                    A Sanctuary for <br/><span class="italic text-neutral-500">Modern Grooming</span>
+                </h2>
+                <p class="text-neutral-500 max-w-sm font-light stagger-in" style="transition-delay: 0.2s">
+                    Located in the heart of the design district. No noise. No rush. Just focus.
+                </p>
+            </div>
+        </div>
+            
+        <div class="flex space-x-6 overflow-x-auto no-scrollbar w-full px-8 md:px-12 lg:px-20 stagger-in pb-8" style="transition-delay: 0.3s">
+            <div class="studio-card flex-none w-[85vw] md:w-[600px] aspect-[4/3] overflow-hidden rounded-sm">
+                <img 
+                    src="https://images.pexels.com/photos/1805600/pexels-photo-1805600.jpeg?auto=compress&cs=tinysrgb&w=1400" 
+                    alt="The Space" 
+                    class="w-full h-full object-cover grayscale"
+                >
+            </div>
+            <div class="studio-card flex-none w-[85vw] md:w-[600px] aspect-[4/3] overflow-hidden rounded-sm">
+                <img 
+                    src="https://images.pexels.com/photos/3998429/pexels-photo-3998429.jpeg?auto=compress&cs=tinysrgb&w=1400" 
+                    alt="Precision Station" 
+                    class="w-full h-full object-cover grayscale"
+                >
+            </div>
+            <div class="studio-card flex-none w-[85vw] md:w-[600px] aspect-[4/3] overflow-hidden rounded-sm">
+                <img 
+                    src="https://images.pexels.com/photos/2040189/pexels-photo-2040189.jpeg?auto=compress&cs=tinysrgb&w=1400" 
+                    alt="Details" 
+                    class="w-full h-full object-cover grayscale"
+                >
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="voices" class="bg-[var(--cream)] py-32 md:py-48 px-8 md:px-12 lg:px-20 relative grain">
+        <div class="max-w-7xl mx-auto">
+            <span class="text-[10px] uppercase tracking-[0.4em] text-neutral-400 mb-8 block stagger-in">03 — Voices</span>
+            <h2 class="text-4xl sm:text-5xl md:text-6xl font-display font-light section-title mb-20 stagger-in" style="transition-delay: 0.1s">
+                What They <span class="italic text-[var(--accent)]">Say</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card p-10 stagger-in" style="transition-delay: 0.2s">
+                    <div class="flex mb-6">
+                        <span class="text-[var(--gold)]">★★★★★</span>
+                    </div>
+                    <p class="font-light text-neutral-600 leading-relaxed mb-8">
+                        "The attention to detail is unmatched. Every visit feels like a ritual, not just a haircut. This is what grooming should be."
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-neutral-200"></div>
+                        <div>
+                            <p class="font-medium text-sm">Marcus Chen</p>
+                            <p class="text-xs text-neutral-400">Creative Director</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card p-10 stagger-in" style="transition-delay: 0.3s">
+                    <div class="flex mb-6">
+                        <span class="text-[var(--gold)]">★★★★★</span>
+                    </div>
+                    <p class="font-light text-neutral-600 leading-relaxed mb-8">
+                        "I've been to barbershops around the world. The Architect is in a class of its own. The environment, the craft, the experience—perfection."
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-neutral-200"></div>
+                        <div>
+                            <p class="font-medium text-sm">David Okonkwo</p>
+                            <p class="text-xs text-neutral-400">Architect</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card p-10 stagger-in md:col-span-2 lg:col-span-1" style="transition-delay: 0.4s">
+                    <div class="flex mb-6">
+                        <span class="text-[var(--gold)]">★★★★★</span>
+                    </div>
+                    <p class="font-light text-neutral-600 leading-relaxed mb-8">
+                        "Finally, a place that understands that a haircut is about structure, proportion, and intent. They don't just cut hair—they sculpt."
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-neutral-200"></div>
+                        <div>
+                            <p class="font-medium text-sm">James Whitmore</p>
+                            <p class="text-xs text-neutral-400">Attorney</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section id="philosophy" class="bg-white py-32 md:py-48 px-8 md:px-12 lg:px-20 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <span class="text-[10px] uppercase tracking-[0.4em] text-neutral-400 mb-12 block stagger-in">04 — Philosophy</span>
+            <blockquote class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light italic leading-tight mb-12 stagger-in" style="transition-delay: 0.1s">
+                "Style is the answer to everything. A fresh way to approach a dull or dangerous thing."
+            </blockquote>
+            <p class="text-base text-neutral-400 font-light stagger-in" style="transition-delay: 0.2s">— Charles Bukowski</p>
+        </div>
+        
+        <!-- Decorative Element -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-neutral-100 rounded-full opacity-50"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-neutral-100 rounded-full opacity-30"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-24 px-8 md:px-12 lg:px-20 bg-[var(--charcoal)] text-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+                <div class="lg:col-span-2">
+                    <h4 class="text-2xl font-display font-light mb-6">The Architect</h4>
+                    <p class="text-neutral-500 font-light max-w-sm leading-relaxed">
+                        A redefined grooming experience at the intersection of precision craftsmanship and modern design.
+                    </p>
+                </div>
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.3em] text-neutral-500 mb-6">Location</h5>
+                    <p class="text-neutral-400 font-light leading-relaxed">
+                        1242 Artisan Ave<br/>
+                        Suite 400<br/>
+                        New York, NY 10013
+                    </p>
+                </div>
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.3em] text-neutral-500 mb-6">Hours</h5>
+                    <p class="text-neutral-400 font-light leading-relaxed">
+                        Tue — Fri: 10am – 8pm<br/>
+                        Sat: 9am – 5pm<br/>
+                        Sun — Mon: Closed
+                    </p>
+                </div>
+            </div>
+            
+            <div class="pt-10 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+                <span class="text-[10px] uppercase tracking-[0.3em] text-neutral-600">© 2024 The Architect Studio. All rights reserved.</span>
+                <div class="flex space-x-8 text-[10px] uppercase tracking-[0.3em]">
+                    <a href="#" class="text-neutral-500 hover:text-white transition-colors">Instagram</a>
+                    <a href="#" class="text-neutral-500 hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="text-neutral-500 hover:text-white transition-colors">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Book Button -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:right-8 lg:right-12 md:translate-x-0 z-40">
+        <button id="bookBtn" class="floating-btn bg-[var(--charcoal)] text-white px-8 py-4 text-[11px] font-medium uppercase tracking-[0.2em] flex items-center space-x-3 group">
+            <span>Book Appointment</span>
+            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content bg-white w-full max-w-lg p-10 md:p-12 relative">
+            <button id="closeModal" class="absolute top-6 right-6 text-neutral-400 hover:text-black transition-colors">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            
+            <h3 class="text-3xl font-display font-light mb-2">Book Your Visit</h3>
+            <p class="text-neutral-500 text-sm mb-10">Select your preferred service and time</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3 block">Service</label>
+                    <select class="w-full border border-neutral-200 p-4 text-sm bg-transparent focus:outline-none focus:border-neutral-900 transition-colors cursor-pointer">
+                        <option>The Signature Cut — $85</option>
+                        <option>Traditional Straight Razor Shave — $65</option>
+                        <option>Beard Architecture — $45</option>
+                        <option>The Complete Experience — $140</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3 block">Preferred Date</label>
+                    <input type="date" class="w-full border border-neutral-200 p-4 text-sm bg-transparent focus:outline-none focus:border-neutral-900 transition-colors cursor-pointer">
+                </div>
+                
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3 block">Email</label>
+                    <input type="email" placeholder="your@email.com" class="w-full border border-neutral-200 p-4 text-sm bg-transparent focus:outline-none focus:border-neutral-900 transition-colors">
+                </div>
+                
+                <button class="w-full bg-[var(--charcoal)] text-white py-4 text-[11px] uppercase tracking-[0.2em] hover:bg-neutral-800 transition-colors mt-4">
+                    Request Appointment
+                </button>
+                
+                <p class="text-[10px] text-neutral-400 text-center">We'll confirm your booking within 24 hours</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content bg-white w-full max-w-lg p-10 md:p-12 relative">
+            <button class="close-contact absolute top-6 right-6 text-neutral-400 hover:text-black transition-colors">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            
+            <h3 class="text-3xl font-display font-light mb-2">Get in Touch</h3>
+            <p class="text-neutral-500 text-sm mb-10">We'd love to hear from you</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3 block">Name</label>
+                    <input type="text" placeholder="Your name" class="w-full border border-neutral-200 p-4 text-sm bg-transparent focus:outline-none focus:border-neutral-900 transition-colors">
+                </div>
+                
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3 block">Email</label>
+                    <input type="email" placeholder="your@email.com" class="w-full border border-neutral-200 p-4 text-sm bg-transparent focus:outline-none focus:border-neutral-900 transition-colors">
+                </div>
+                
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.2em] text-neutral-500 mb-3 block">Message</label>
+                    <textarea rows="4" placeholder="How can we help?" class="w-full border border-neutral-200 p-4 text-sm bg-transparent focus:outline-none focus:border-neutral-900 transition-colors resize-none"></textarea>
+                </div>
+                
+                <button class="w-full bg-[var(--charcoal)] text-white py-4 text-[11px] uppercase tracking-[0.2em] hover:bg-neutral-800 transition-colors">
+                    Send Message
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        
+        if (cursor && cursorDot) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX - 10 + 'px';
+                cursor.style.top = e.clientY - 10 + 'px';
+                cursorDot.style.left = e.clientX - 2 + 'px';
+                cursorDot.style.top = e.clientY - 2 + 'px';
+            });
+
+            const hoverElements = document.querySelectorAll('a, button, .studio-card, input, select, textarea');
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+        }
+
+        // Scroll Progress
+        const scrollProgress = document.querySelector('.scroll-progress');
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight));
+            scrollProgress.style.transform = `scaleX(${scrolled})`;
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stagger-in, .fade-in').forEach(el => observer.observe(el));
+
+        // Hero Parallax
+        const heroImg = document.getElementById('heroImg');
+        window.addEventListener('scroll', () => {
+            if (heroImg && window.scrollY < window.innerHeight) {
+                heroImg.style.transform = `scale(${1.05 + window.scrollY * 0.0002})`;
+            }
+        });
+
+        // Mobile Menu
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Modals
+        const bookBtn = document.getElementById('bookBtn');
+        const bookingModal = document.getElementById('bookingModal');
+        const closeModal = document.getElementById('closeModal');
+        const contactBtn = document.getElementById('contactBtn');
+        const contactModal = document.getElementById('contactModal');
+        const closeContact = document.querySelector('.close-contact');
+        const mobileContactTrigger = document.querySelector('.contact-trigger');
+
+        function openModal(modal) {
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModalFn(modal) {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        bookBtn.addEventListener('click', () => openModal(bookingModal));
+        closeModal.addEventListener('click', () => closeModalFn(bookingModal));
+        bookingModal.addEventListener('click', (e) => {
+            if (e.target === bookingModal) closeModalFn(bookingModal);
+        });
+
+        contactBtn.addEventListener('click', () => openModal(contactModal));
+        closeContact.addEventListener('click', () => closeModalFn(contactModal));
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeModalFn(contactModal);
+        });
+
+        if (mobileContactTrigger) {
+            mobileContactTrigger.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                openModal(contactModal);
+            });
+        }
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModalFn(bookingModal);
+                closeModalFn(contactModal);
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

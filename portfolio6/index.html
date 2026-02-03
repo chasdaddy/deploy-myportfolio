@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXIS-01 // Industrial Reference</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #E6E3DF;
+            --stone-900: #121110;
+            --stone-700: #3D3935;
+            --stone-400: #7F7974;
+            --accent: #CCFF00;
+            --nav-height: 120px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--stone-900);
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        html { scroll-behavior: auto; }
+        body::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .font-serif { font-family: 'Libre Bodoni', serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* Navigation */
+        #main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--bg-color) 60%, transparent);
+            pointer-events: none;
+        }
+
+        /* Fixed Hardware Viewport */
+        #hardware-viewport {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .viewport-container {
+            perspective: 2500px;
+            transform: scale(0.9) rotateX(50deg);
+        }
+
+        .hardware-layer {
+            position: absolute;
+            will-change: transform;
+            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Components */
+        .keycap-grid { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 8px; 
+            width: 400px; 
+        }
+        
+        .keycap { 
+            aspect-ratio: 1/1; 
+            background: linear-gradient(145deg, #FFFFFF 0%, #F5F5F4 100%);
+            border-radius: 3px; 
+            border-bottom: 3px solid #D6D3D1; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+        
+        .switch-grid { 
+            display: grid; 
+            grid-template-columns: repeat(10, 1fr); 
+            gap: 14px; 
+            opacity: 0.5; 
+            width: 380px; 
+        }
+        
+        .switch-dot { 
+            aspect-ratio: 1/1; 
+            background: linear-gradient(145deg, #D97706 0%, #B45309 100%);
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* PCB */
+        .pcb-board {
+            width: 420px;
+            height: 144px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border-top: 1px solid #333;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pcb-board::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(204,255,0,0.03) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(204,255,0,0.03) 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+
+        /* Case */
+        .case-body {
+            width: 480px;
+            height: 176px;
+            background: linear-gradient(180deg, #EAE7E3 0%, #D6D3CF 100%);
+            border-radius: 2.5rem;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.2);
+            border-top: 1px solid rgba(255,255,255,0.8);
+        }
+
+        /* Information Slides */
+        .detail-slide {
+            position: fixed;
+            top: var(--nav-height);
+            left: 0;
+            width: 45%;
+            height: calc(100vh - var(--nav-height));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 8%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 30;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .detail-slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Typography */
+        .tech-heading {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--stone-400);
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .tech-main {
+            font-size: clamp(2.5rem, 5vh, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--stone-900);
+            text-align: left;
+        }
+
+        .tech-desc {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.6;
+            color: var(--stone-700);
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .tech-value {
+            border-left: 5px solid var(--accent);
+            padding: 0.5rem 0 0.5rem 2rem;
+            margin-top: 3rem;
+            text-align: left;
+        }
+
+        /* Hero */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 8%;
+            position: relative;
+            z-index: 40;
+        }
+
+        /* Static Content */
+        .static-content {
+            position: relative;
+            z-index: 60;
+            background-color: var(--bg-color);
+            box-shadow: 0 -50px 100px rgba(0,0,0,0.05);
+        }
+
+        /* Grid Background */
+        .studio-light {
+            background: radial-gradient(circle at 30% 30%, white, transparent 70%);
+            opacity: 0.6;
+        }
+
+        .grid-line { 
+            border-right: 1px solid rgba(18, 17, 16, 0.05); 
+            height: 100%; 
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: var(--accent);
+            z-index: 200;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Fixed UI Background -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute inset-0 studio-light"></div>
+        <div class="max-w-7xl mx-auto h-full grid grid-cols-12 px-8">
+            <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="main-nav">
+        <div class="flex flex-col gap-1 pointer-events-auto">
+            <span class="font-serif text-2xl font-bold tracking-tighter leading-none">AXIS-01</span>
+            <span class="font-mono text-[8px] tracking-[0.4em] uppercase text-stone-400 font-bold">Hardware Engineering</span>
+        </div>
+        <div class="flex gap-12 font-mono text-[9px] uppercase tracking-[0.4em] font-bold text-stone-500 pointer-events-auto items-center">
+            <button class="hover:text-stone-900 transition-colors">Lab</button>
+            <button class="hover:text-stone-900 transition-colors">Reserve</button>
+            <button class="bg-black text-white px-6 py-2 rounded-sm text-[10px] tracking-[0.2em] font-black hover:bg-stone-800 transition-colors">DOCUMENTATION</button>
+        </div>
+    </nav>
+
+    <!-- Hardware Viewport -->
+    <div id="hardware-viewport">
+        <div class="viewport-container relative w-full h-[600px] flex items-center justify-center" id="viewportContainer">
+            <div id="keycaps" class="hardware-layer z-40"><div class="keycap-grid"></div></div>
+            <div id="switches" class="hardware-layer z-30"><div class="switch-grid"></div></div>
+            <div id="pcb" class="hardware-layer z-20">
+                <div class="pcb-board">
+                    <div class="flex justify-between items-start opacity-50 relative z-10">
+                        <svg class="w-5 h-5 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                        <div class="font-mono text-[7px] text-stone-400 uppercase font-bold tracking-widest">REV_04</div>
+                    </div>
+                    <div class="w-full h-px bg-stone-800 relative z-10"></div>
+                </div>
+            </div>
+            <div id="case" class="hardware-layer z-10"><div class="case-body"></div></div>
+            <div id="shadow" class="absolute -bottom-24 w-[500px] h-16 bg-black blur-[80px] rounded-[100%] z-0 opacity-15"></div>
+        </div>
+    </div>
+
+    <!-- Content Flow -->
+    <div id="scrolly-trigger" style="height: 500vh;">
+        
+        <!-- Hero -->
+        <div id="slide-hero" class="hero-section fixed inset-0 transition-opacity duration-500">
+            <div class="max-w-2xl">
+                <h1 class="text-[8vw] font-serif font-bold leading-[0.8] tracking-tighter mb-10 text-stone-900">TACTILE <br><span class="italic text-[7vw]">AUTHORITY.</span></h1>
+                <p class="font-mono text-[11px] font-bold uppercase tracking-[0.4em] text-stone-500 leading-relaxed max-w-md">
+                    Mechanical precision division // AXIS-01. <br> Engineered for zero-tolerance benchmarks.
+                </p>
+            </div>
+        </div>
+
+        <!-- Detail Slides -->
+        <div id="slide-keycaps" class="detail-slide">
+            <div class="tech-heading">Hardware // 01 // Keycaps</div>
+            <div class="tech-main font-serif italic">Double-Shot Shell.</div>
+            <div class="tech-desc">Constructed from high-density PBT. Legends are depth-injected, ensuring lifetime clarity under extreme load.</div>
+            <div class="tech-value">
+                <div class="text-xl font-bold tracking-tight uppercase">Wall: 1.5mm</div>
+                <div class="text-[10px] uppercase font-bold opacity-50 tracking-widest mt-1">Material: High-Density PBT // 85D</div>
+            </div>
+        </div>
+
+        <div id="slide-switches" class="detail-slide">
+            <div class="tech-heading">Hardware // 02 // Actuators</div>
+            <div class="tech-main font-serif italic">Linear Logic.</div>
+            <div class="tech-desc">The AX-9 Linear engine utilizes dual-rail stems. Friction reduced to the physical limit for instant travel.</div>
+            <div class="tech-value">
+                <div class="text-xl font-bold tracking-tight uppercase">Force: 45g</div>
+                <div class="text-[10px] uppercase font-bold opacity-50 tracking-widest mt-1">LUBRICANT: Krytox 205g0 // Stable</div>
+            </div>
+        </div>
+
+        <div id="slide-pcb" class="detail-slide">
+            <div class="tech-heading">Hardware // 03 // Signal</div>
+            <div class="tech-main font-serif italic">Instant Response.</div>
+            <div class="tech-desc">Native 8000Hz polling rate via ARM Cortex-M4. Registered at the absolute speed of electricity.</div>
+            <div class="tech-value">
+                <div class="text-xl font-bold tracking-tight uppercase">Rate: 0.125ms</div>
+                <div class="text-[10px] uppercase font-bold opacity-50 tracking-widest mt-1">32-Bit Risc // High-Frequency</div>
+            </div>
+        </div>
+
+        <div id="slide-case" class="detail-slide">
+            <div class="tech-heading">Hardware // 04 // Chassis</div>
+            <div class="tech-main font-serif italic">Milled Mass.</div>
+            <div class="tech-desc">CNC Machined from a solid 5kg block of aircraft aluminum. Finished for absolute rigidity.</div>
+            <div class="tech-value">
+                <div class="text-xl font-bold tracking-tight uppercase">Net: 2.4kg</div>
+                <div class="text-[10px] uppercase font-bold opacity-50 tracking-widest mt-1">Series 6 AL // Shot-Peened</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Static Content -->
+    <div class="static-content">
+        <!-- Technical Spec Grid -->
+        <section id="specs" class="py-40 px-8 lg:px-20 border-t border-stone-300">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-12 gap-8 mb-24 items-end">
+                    <h4 class="col-span-12 lg:col-span-9 text-[10vw] font-serif font-bold tracking-tighter leading-none uppercase">Technical.</h4>
+                    <div class="col-span-12 lg:col-span-3 lg:text-right font-bold text-stone-400">
+                        <span class="font-mono text-[10px] uppercase tracking-[0.4em]">MOD_01_REVISION_E</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-stone-900 border border-stone-900 rounded-sm overflow-hidden">
+                    <div class="bg-[#E6E3DF] p-12 hover:bg-[#CCFF00] hover:text-stone-900 transition-all duration-300 cursor-pointer">
+                        <div class="mb-10 font-mono text-[10px] uppercase tracking-[0.3em] font-bold opacity-50">Layout</div>
+                        <div class="text-2xl font-serif font-bold tracking-tight uppercase">75% Form</div>
+                    </div>
+                    <div class="bg-[#E6E3DF] p-12 hover:bg-[#CCFF00] hover:text-stone-900 transition-all duration-300 cursor-pointer">
+                        <div class="mb-10 font-mono text-[10px] uppercase tracking-[0.3em] font-bold opacity-50">Switches</div>
+                        <div class="text-2xl font-serif font-bold tracking-tight uppercase">Linear AX-9</div>
+                    </div>
+                    <div class="bg-[#E6E3DF] p-12 hover:bg-[#CCFF00] hover:text-stone-900 transition-all duration-300 cursor-pointer">
+                        <div class="mb-10 font-mono text-[10px] uppercase tracking-[0.3em] font-bold opacity-50">Mount</div>
+                        <div class="text-2xl font-serif font-bold tracking-tight uppercase">Gasket</div>
+                    </div>
+                    <div class="bg-[#E6E3DF] p-12 hover:bg-[#CCFF00] hover:text-stone-900 transition-all duration-300 cursor-pointer">
+                        <div class="mb-10 font-mono text-[10px] uppercase tracking-[0.3em] font-bold opacity-50">Warranty</div>
+                        <div class="text-2xl font-serif font-bold tracking-tight uppercase">5 Year Pro</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <footer class="h-screen flex flex-col items-center justify-center text-center px-8 bg-[#E6E3DF]">
+            <div class="max-w-4xl">
+                <div class="flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.5em] text-stone-400 font-bold mb-12">
+                    <div class="w-1.5 h-1.5 bg-stone-900 rounded-full"></div> LIMITED RELEASE BATCH 01
+                </div>
+                <h5 class="text-[10vw] font-serif font-bold tracking-tighter leading-none mb-12 italic text-stone-900 uppercase">Experience <br>Precision.</h5>
+                <div class="flex flex-wrap justify-center gap-8 mt-16">
+                    <button class="bg-black text-white px-16 py-8 rounded-sm font-bold uppercase tracking-[0.3em] text-xs shadow-2xl hover:bg-stone-800 transition-all">RESERVE UNIT</button>
+                    <button class="border-2 border-stone-900 text-stone-900 px-16 py-8 rounded-sm font-bold uppercase tracking-[0.3em] text-xs hover:bg-stone-900 hover:text-white transition-all">Documentation</button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Build grids
+        const kContainer = document.querySelector('.keycap-grid');
+        const sContainer = document.querySelector('.switch-grid');
+        for (let i = 0; i < 30; i++) {
+            const c = document.createElement('div'); 
+            c.className = 'keycap'; 
+            kContainer.appendChild(c);
+        }
+        for (let i = 0; i < 20; i++) {
+            const s = document.createElement('div'); 
+            s.className = 'switch-dot'; 
+            sContainer.appendChild(s);
+        }
+
+        // Elements
+        const layers = {
+            viewport: document.getElementById('hardware-viewport'),
+            keycaps: document.getElementById('keycaps'),
+            switches: document.getElementById('switches'),
+            pcb: document.getElementById('pcb'),
+            case: document.getElementById('case'),
+            shadow: document.getElementById('shadow'),
+            container: document.getElementById('viewportContainer')
+        };
+
+        const slides = {
+            hero: document.getElementById('slide-hero'),
+            keycaps: document.getElementById('slide-keycaps'),
+            switches: document.getElementById('slide-switches'),
+            pcb: document.getElementById('slide-pcb'),
+            case: document.getElementById('slide-case')
+        };
+
+        const scrollProgress = document.getElementById('scrollProgress');
+
+        function mapRange(value, inMin, inMax, outMin, outMax) {
+            const t = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+            return outMin + (outMax - outMin) * t;
+        }
+
+        // Throttled scroll
+        let ticking = false;
+
+        function handleScroll() {
+            const trigger = document.getElementById('scrolly-trigger');
+            const scrollPos = window.scrollY;
+            const maxScroll = trigger.offsetHeight - window.innerHeight;
+            const progress = Math.min(Math.max(scrollPos / maxScroll, 0), 1);
+
+            // Progress bar
+            scrollProgress.style.transform = `scaleX(${progress})`;
+
+            // Layer positions - fixed spacing to prevent clipping
+            const kY = mapRange(progress, 0.05, 0.30, 0, -380);
+            const sY = mapRange(progress, 0.25, 0.50, 0, -160);
+            const pY = mapRange(progress, 0.45, 0.70, 0, -40);
+            const cY = mapRange(progress, 0.65, 0.90, 0, 350);
+
+            layers.keycaps.style.transform = `translateY(${kY}px)`;
+            layers.switches.style.transform = `translateY(${sY}px)`;
+            layers.pcb.style.transform = `translateY(${pY}px)`;
+            layers.case.style.transform = `translateY(${cY}px)`;
+            
+            // Shadow dynamics
+            const shadowOpacity = mapRange(progress, 0, 0.5, 0.15, 0.03);
+            const shadowScale = mapRange(progress, 0, 0.5, 1, 1.3);
+            layers.shadow.style.opacity = shadowOpacity;
+            layers.shadow.style.transform = `scaleX(${shadowScale})`;
+
+            // Rotation & scale
+            const rotateX = mapRange(progress, 0, 0.8, 50, 15);
+            const rotateY = mapRange(progress, 0, 0.8, 0, -15);
+            const scale = mapRange(progress, 0, 0.3, 0.9, 0.95);
+            layers.container.style.transform = `scale(${scale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+            // Viewport fade at end
+            layers.viewport.style.opacity = progress > 0.95 ? mapRange(progress, 0.95, 1, 1, 0) : 1;
+
+            // Hero fade
+            slides.hero.style.opacity = mapRange(progress, 0, 0.08, 1, 0);
+
+            // Slide visibility
+            const setActive = (slide, start, end) => {
+                if (progress > start && progress < end) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            };
+
+            setActive(slides.keycaps, 0.10, 0.30);
+            setActive(slides.switches, 0.32, 0.52);
+            setActive(slides.pcb, 0.54, 0.74);
+            setActive(slides.case, 0.76, 0.95);
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    handleScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', handleScroll);
+        handleScroll();
+    </script>
+</body>
+</html>

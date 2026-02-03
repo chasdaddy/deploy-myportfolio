@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoinWatch Tracker</title>
+    <style>
+      :root { --bg: #f2f2f2; --ink: #1e1e1e; --muted: #666; --accent: #2f6bff; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: Arial, sans-serif; background: var(--bg); color: var(--ink); }
+      .wrap { padding: 14px; display: grid; gap: 10px; }
+      .nav { display: flex; justify-content: space-between; font-size: 10px; }
+      .nav a { color: var(--ink); text-decoration: underline; }
+      .hero { background: #ffffff; border: 1px solid #d9d9d9; padding: 10px; }
+      h1 { font-size: 15px; margin-bottom: 4px; }
+      p { font-size: 10px; color: var(--muted); line-height: 1.4; }
+      .cta { margin-top: 6px; background: #2f6bff; color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 9px; display: inline-block; }
+      .ticker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .card { border: 1px dashed #cfcfcf; padding: 6px; font-size: 9px; background: #fff; }
+      .feature { border: 1px dashed #cfcfcf; padding: 6px; font-size: 9px; background: #fff; }
+      .pricing { border: 1px dashed #cfcfcf; padding: 6px; font-size: 9px; background: #fff; }
+      .chart { height: 46px; border: 1px dashed #cfcfcf; background: #fff; }
+      .footer { font-size: 9px; color: var(--muted); }
+      .banner { border: 1px dashed #cfcfcf; padding: 6px; font-size: 9px; background: #fff; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="nav">
+        <div><strong>CoinWatch</strong></div>
+        <div><a href="#">Home</a> · <a href="#">Coins</a> · <a href="#">News</a></div>
+      </div>
+      <div class="hero">
+        <h1>Crypto Prices</h1>
+        <p>Track prices and charts. We have many coins and news updates.</p>
+        <div class="cta">Sign Up</div>
+      </div>
+      <div class="ticker">
+        <div class="card">BTC $---</div>
+        <div class="card">ETH $---</div>
+        <div class="card">SOL $---</div>
+      </div>
+      <div class="chart"></div>
+      <div class="banner">No clear value · No alerts · No personalization</div>
+      <div class="ticker">
+        <div class="feature">Feature 1</div>
+        <div class="feature">Feature 2</div>
+        <div class="feature">Feature 3</div>
+      </div>
+      <div class="pricing">Pricing: Contact us</div>
+      <div class="footer">Data may be delayed. Not financial advice.</div>
+    </div>
+  </body>
+</html>
